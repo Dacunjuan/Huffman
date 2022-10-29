@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define true 1
 #define false 0
@@ -36,12 +37,13 @@ void printAll(symbol_prob *allTask, int count);
 int check_prob(symbol_prob list[], int count)
 {
     int i = 0;
-    double temp = 0.0;
+    unsigned long long int temp = 0.0, max = 1.0;
     for (i = 0; i < count; i++)
     {
         temp += list[i].prob;
     }
-    int flag = temp == 1.0 ? true : false;
+
+    int flag = (temp - 1.0) <= 0.0 ? true : false;
     return flag;
 }
 
@@ -69,7 +71,7 @@ Str *StrNew()
 
 void StrAppend(Str *str, char *s)
 {
-    int newLen = str->len + 1;
+    int newLen = str->len + strlen(s);
     if (newLen + 1 > str->size)
     {
         int newSize = max(str->size * 2, newLen + 1);
@@ -91,11 +93,6 @@ void Huffman(symbol_prob *allTask, int count)
 {
     if (count == 1 && allTask[0].prob == 1.0)
     {
-        symbol_prob *left_temp = allTask->left;
-        symbol_prob *right_temp = allTask->right;
-        Str *strTemp = allTask->codeword;
-        StrAppend(left_temp->codeword, "0");
-        StrAppend(right_temp->codeword, "1");
         returnBack_Symbol(allTask);
         return;
     }
@@ -107,7 +104,6 @@ void Huffman(symbol_prob *allTask, int count)
 
     sortTask(allTask, count);
     symbol_prob *new_allSymbol = createTask(allTask, count);
-    printAll(new_allSymbol, count - 1);
     Huffman(new_allSymbol, count - 1);
 }
 
@@ -147,8 +143,6 @@ void sortTask(symbol_prob allTask[], int count)
             }
         }
         swapTask(allTask, i, max);
-        // debug
-        // printf("%c\t%lf\n", allTask[i].symbol, allTask[i].prob);
     }
 }
 
@@ -174,7 +168,6 @@ symbol_prob *createTask(symbol_prob *allTask, int count)
             temp[i].left = &allTask[i];
             temp[i].right = NULL;
         }
-        printf("%d %lf\n", i, temp[i].prob);
     }
     return temp;
 }
@@ -201,12 +194,12 @@ void returnBack_Symbol(symbol_prob *allTask)
     }
     else if (left_temp != NULL && right_temp == NULL)
     {
+        StrAppend(left_temp->codeword, strTemp->s);
         returnBack_Symbol(left_temp);
     }
     else
     {
         return;
-        // done;
     }
 }
 
@@ -217,6 +210,30 @@ void printAll(symbol_prob *allTask, int count)
     for (i = 0; i < count; i++)
     {
         Str *temp = allTask[i].codeword;
-        printf("%d\t%0.3lf\t%s\n", i, allTask[i].prob, temp->s);
+        printf("%c\t%0.3lf\t%s\n", allTask[i].symbol, allTask[i].prob, temp->s);
     }
+}
+// code len
+double calculateLav(symbol_prob *allTask, int count)
+{
+    int i;
+    double Lav = 0;
+    for (i = 0; i < count; i++)
+    {
+        Str *temp = allTask[i].codeword;
+        Lav += allTask[i].prob * temp->len;
+    }
+    return Lav;
+}
+// Entropy
+double calculateEntropy(symbol_prob *allTask, int count)
+{
+    int i;
+    double Hr = 0;
+    for (i = 0; i < count; i++)
+    {
+        Str *temp = allTask[i].codeword;
+        Hr += allTask[i].prob * (log(1 / allTask[i].prob) / log(2));
+    }
+    return Hr;
 }
