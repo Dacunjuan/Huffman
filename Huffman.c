@@ -6,13 +6,25 @@ int main(int argc, char *argv[])
     symbol_prob all[10];
     int count = 0;
     int temp;
+    /*
+    if (argc == 2)
+    {
+        printf("Symbol\tProb\t\n");
+        FILE *fp = fopen(argv[1], "r");
+
+    }
+    else
+    {
+        printf("Too many parameter!\n");
+        return 0;
+    }
+    */
     printf("Symbol\tProb\t\n");
-    while (scanf("%d", &temp) != EOF)
+    while (scanf("%c %lf", &all[count].symbol, &all[count].prob) != EOF)
     {
         all[count].codeword = StrNew();
         all[count].left = NULL;
         all[count].right = NULL;
-        scanf("%c %lf", &all[count].symbol, &all[count].prob);
         printf("%c\t%lf\n", all[count].symbol, all[count].prob);
         count++;
     }
