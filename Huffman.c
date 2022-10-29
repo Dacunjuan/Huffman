@@ -5,28 +5,17 @@ int main(int argc, char *argv[])
 {
     symbol_prob all[10];
     int count = 0;
-    int temp;
-    /*
-    if (argc == 2)
-    {
-        printf("Symbol\tProb\t\n");
-        FILE *fp = fopen(argv[1], "r");
-
-    }
-    else
-    {
-        printf("Too many parameter!\n");
-        return 0;
-    }
-    */
-    printf("Symbol\tProb\t\n");
-    while (scanf("%c %lf", &all[count].symbol, &all[count].prob) != EOF)
+    while (scanf(" %c %lf", &all[count].symbol, &all[count].prob) != EOF)
     {
         all[count].codeword = StrNew();
         all[count].left = NULL;
         all[count].right = NULL;
-        printf("%c\t%lf\n", all[count].symbol, all[count].prob);
         count++;
+        if (count == 10)
+        {
+            printf("Symbol count = 10 , Stop read\n");
+            break;
+        }
     }
     printf("----------------\n");
     if (check_prob(all, count) == true)
@@ -38,6 +27,6 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("prob Error!\n");
+        printf("Probability Error! Sum not equal 1.0\n");
     }
 }
